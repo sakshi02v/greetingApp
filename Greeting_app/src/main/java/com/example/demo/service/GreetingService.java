@@ -64,5 +64,13 @@ public class GreetingService {
         }
         return "No such id present in repository";
         
+        public String deleteGreetingById(Long id) {
+            if (greetingRepository.existsById(id)) {
+                greetingRepository.deleteById(id);
+                return "Greeting deleted successfully";
+            } else {
+                return "Greeting not found";
+            }
+        
     }
 }

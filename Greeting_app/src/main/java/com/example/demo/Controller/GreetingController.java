@@ -72,11 +72,12 @@ public class GreetingController {
         return response;
     }
 
-        
-        // Update message from the repository
-        @GetMapping("/update/{id}/{message}")
-        public String getUpdateMessage(@PathVariable Long id, @PathVariable String message) {
-            return greetingService.updateMessage(id,message);
+    
+    @DeleteMapping("/{id}")
+    public Map<String, String> deleteGreeting(@PathVariable Long id) {
+        Map<String, String> response = new HashMap<>();
+        response.put("message", greetingService.deleteGreetingById(id));
+        return response;
     }
 
 
