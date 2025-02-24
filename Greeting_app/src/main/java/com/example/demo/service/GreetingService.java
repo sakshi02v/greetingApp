@@ -5,7 +5,9 @@ import com.example.demo.repository.GreetingRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+
 
 @Service
 public class GreetingService {
@@ -40,11 +42,27 @@ public class GreetingService {
         return greetingRepository.findAll();
     }
 
- 
+ // To search message by id
+    public String getGreetingMessageById(Long id) {
+        Optional<Greeting> greeting = greetingRepository.findById(id);
+        if(greeting.isPresent()) {
+            return greeting.get().getMessage();
+        }
+        else {
+            return "There is no such message with entered id";
+        }
+    }
         
-        // Method to list all the greetings
-        public List<Greeting> listAllGreetings() {
-            return greetingRepository.findAll();
+    // Method to update the message in the repository
+    public String updateMessage(Long id, String newMessage) {
+        List<Greeting> greetings = greetingRepository.findAll();
+        for(Greeting greet:greetings) {
+            if(Objects.equals(greet.getId(), id)) {
+                greet.setMessage(newMessage);
+                return greet.getMessage();
+            }
+        }
+        return "No such id present in repository";
         
     }
 }

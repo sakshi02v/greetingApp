@@ -72,10 +72,11 @@ public class GreetingController {
         return response;
     }
 
-    // Get the list of all greetings
-    @GetMapping("/all")
-    public List<Greeting> getAllGreetings() {
-        return greetingService.listAllGreetings();
+        
+        // Update message from the repository
+        @GetMapping("/update/{id}/{message}")
+        public String getUpdateMessage(@PathVariable Long id, @PathVariable String message) {
+            return greetingService.updateMessage(id,message);
     }
 
 
