@@ -2,24 +2,22 @@ package com.example.demo.service;
 
 import org.springframework.stereotype.Service;
 
+import com.example.demo.model.Greeting;
+import com.example.demo.repository.GreetingRepository;
+
 
 @Service
 public class GreetingService {
 
-    public String getGreetingMessage() {
-        return "Hello, World!";
+    private final GreetingRepository greetingRepository;
+
+    public GreetingService(GreetingRepository greetingRepository) {
+        this.greetingRepository = greetingRepository;
     }
 
-    // Method to return a personalized greeting
-    public String getParametrizedGreeting(String firstName, String lastName) {
-        if (firstName != null && lastName != null) {
-            return "Hello, " + firstName + " " + lastName + "!";
-        } else if (firstName != null) {
-            return "Hello, " + firstName + "!";
-        } else if (lastName != null) {
-            return "Hello, " + lastName + "!";
-        } else {
-            return "Hello, World!";
-        }
+    public Greeting saveGreeting(String message) {
+        return greetingRepository.save(new Greeting(message));
+
+
     }
 }
