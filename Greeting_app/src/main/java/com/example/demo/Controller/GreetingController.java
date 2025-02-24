@@ -12,49 +12,71 @@ import java.util.Map;
 @RestController
 @RequestMapping("/greeting")
 public class GreetingController {
-    private final GreetingService greetingService;
+    private GreetingService greetingService;
 
-    // Dependency Injection using Constructor
-    public GreetingController(GreetingService greetingService) {
+    // injection of GreetingService
+    GreetingController(GreetingService greetingService) {
         this.greetingService = greetingService;
     }
 
-    // Endpoint to return greeting message based on name parameters
     @GetMapping
-    public ResponseEntity<Map<String, String>> getGreeting(
+    public Map<String, String> getGreeting(
             @RequestParam(required = false) String firstName,
             @RequestParam(required = false) String lastName) {
 
-        String message = greetingService.getGreetingMessage(firstName, lastName);
-        greetingService.saveGreeting(message); // Save the greeting in the DB
+        String message;
+        if (firstName != null && lastName != null) {
+            message = "Hello, " + firstName + " " + lastName + "!";
+        } else if (firstName != null) {
+            message = "Hello, " + firstName + "!";
+        } else if (lastName != null) {
+            message = "Hello, " + lastName + "!";
+        } else {
+            message = "Hello, World!";
+        }
+
+        // Save the greeting message in the database
+        greetingService.saveGreeting(message);
 
         Map<String, String> response = new HashMap<>();
         response.put("message", message);
-
-        return ResponseEntity.ok(response); // ✅ Returns 200 OK with JSON response
+        return response;
     }
 
-    // Retrieve all greetings
-    @GetMapping("/all")
-    public ResponseEntity<List<Greeting>> getAllGreetings() {
-        return ResponseEntity.ok(greetingService.getAllGreetings());
-    }
 
-    // Retrieve a greeting message by ID
     @GetMapping("/{id}")
-    public ResponseEntity<Greeting> getGreetingById(@PathVariable Long id) {
-        Greeting greeting = greetingService.getGreetingById(id);
-        if (greeting != null) {
-            return ResponseEntity.ok(greeting);
-        } else {
-            return ResponseEntity.notFound().build(); // ✅ Returns 404 if not found
-        }
+    public String getGreetingMessageById(@PathVariable Long id) {
+        return greetingService.getGreetingMessageById(id);
     }
 
-    // Save a new greeting message
     @PostMapping
-    public ResponseEntity<Greeting> createGreeting(@RequestBody Greeting greeting) {
-        Greeting savedGreeting = greetingService.saveGreeting(greeting.getMessage());
-        return ResponseEntity.ok(savedGreeting);
+    public Map<String, String> postGreeting(@RequestBody Map<String, String> request) {
+        Map<String, String> response = new HashMap<>();
+        response.put("message", greetingService.getGreetingMessage());
+        response.put("received", request.getOrDefault("name", "No Name Provided"));
+        return response;
     }
+
+    @PutMapping
+    public Map<String, String> putGreeting(@RequestBody Map<String, String> request) {
+        Map<String, String> response = new HashMap<>();
+        response.put("message", greetingService.getGreetingMessage());
+        response.put("updated", request.getOrDefault("name", "No Name Provided"));
+        return response;
+    }
+
+    @DeleteMapping
+    public Map<String, String> deleteGreeting() {
+        Map<String, String> response = new HashMap<>();
+        response.put("message", greetingService.getGreetingMessage());
+        return response;
+    }
+
+    // Get the list of all greetings
+    @GetMapping("/all")
+    public List<Greeting> getAllGreetings() {
+        return greetingService.listAllGreetings();
+    }
+
+
 }

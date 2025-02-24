@@ -40,8 +40,11 @@ public class GreetingService {
         return greetingRepository.findAll();
     }
 
-    // Find a greeting by ID and return Greeting object instead of String
-    public Greeting getGreetingById(Long id) {
-        return greetingRepository.findById(id).orElse(null);
+ 
+        
+        // Method to list all the greetings
+        public List<Greeting> listAllGreetings() {
+            return greetingRepository.findAll();
+        
     }
 }
